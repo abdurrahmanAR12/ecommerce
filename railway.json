@@ -6,7 +6,6 @@
   },
   "deploy": {
     "startCommand": "node index",
-    "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "never"
   }
