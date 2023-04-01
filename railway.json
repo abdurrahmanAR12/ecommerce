@@ -5,7 +5,7 @@
     "buildCommand": "echo building!"
   },
   "deploy": {
-    "startCommand": "echo starting!",
+    "startCommand": "node index",
     "healthcheckPath": "/",
     "healthcheckTimeout": 100,
     "restartPolicyType": "never"
