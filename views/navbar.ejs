@@ -1,0 +1,212 @@
+<nav style="position: sticky;top: 0;left: 0;z-index: 110;" class="bg-white border-gray-200 py-1 dark:bg-gray-900">
+    <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+        <a href="/" class="flex items-center">
+            <img src="/images/logo.png" class="w-12 mx-2" alt="">
+            <span class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">Millionairo</span>
+        </a>
+        <div class="flex items-center md:order-2">
+            <button type="button"
+                class="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+                id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown"
+                data-dropdown-placement="bottom">
+                <span class="sr-only">Open user menu</span>
+                <img class="w-8 h-8 rounded-full" id="profile_photo_nav" src="/images/user.png" alt="user photo">
+            </button>
+            <!-- Dropdown menu -->
+            <div class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+                id="user-dropdown">
+                <div id="user-nav" class="px-4 py-3">
+                    <div class="h-4 bg-gray-200 rounded-md dark:bg-gray-700 w-48 mb-1"></div>
+                    <div class="h-4 bg-gray-200 rounded-md dark:bg-gray-700 w-48 mb-1"></div>
+                </div>
+                <ul class="py-2" aria-labelledby="user-menu-button">
+                    <li>
+                        <a href="/settings"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Settings</a>
+                    </li>
+                    <li>
+                        <a href="/cart"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">My
+                            Cart</a>
+                    </li>
+                    <li>
+                        <a href="#" btn-logout
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign
+                            out</a>
+                    </li>
+                    <script>
+                        document.querySelector("[btn-logout]").addEventListener("click", () => {
+                            localStorage.removeItem(tokenString);
+                            window.location = "/";
+                            window.location.reload();
+                        });
+                    </script>
+                </ul>
+            </div>
+            <button data-collapse-toggle="navbar-user" type="button"
+                class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                aria-controls="navbar-user" aria-expanded="false">
+                <span class="sr-only">Open main menu</span>
+                <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 17 14">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M1 1h15M1 7h15M1 13h15" />
+                </svg>
+            </button>
+        </div>
+        <div class="items-center justify-betweenhidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
+            <ul
+                class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
+                <li>
+                    <a href="/"
+                        class="block py-2 pl-3 pr-4 text-black bg-blue-700 rounded md:bg-transparent hover:text-blue-700 md:p-0 md:dark:text-blue-500"
+                        aria-current="page">Home</a>
+                </li>
+
+
+                <li>
+                    <button id="dropdownNavbarLink" data-dropdown-toggle="dropdownNavbar"
+                        class="flex items-center justify-between w-full py-2 pl-3 pr-4  text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent">
+                        Categories
+                        <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                            fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 4 4 4-4" />
+                        </svg></button>
+
+                    <!-- Dropdown menu -->
+                    <div id="dropdownNavbar"
+                        class="z-10 hidden font-normal bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700 dark:divide-gray-600">
+                        <ul class="py-2 text-sm text-gray-700 dark:text-gray-400" aria-labelledby="dropdownLargeButton">
+                            <% for(let cat of categories){ %>
+                                <li>
+                                    <a href=<%="/category/" + cat.Name %>
+                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600
+                                        dark:hover:text-white">
+                                        <%= cat.Name %>
+                                    </a>
+                                </li>
+                                <% } %>
+                        </ul>
+                    </div>
+                </li>
+
+                <li>
+                    <button id="dropdownSearchButton" data-dropdown-toggle="dropdownSearch"
+                        data-dropdown-placement="bottom"
+                        class="flex items-center justify-between w-full py-2 pl-3 pr-4  text-gray-700 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-700 md:p-0 md:w-auto dark:text-white md:dark:hover:text-blue-500 dark:focus:text-white dark:border-gray-700 dark:hover:bg-gray-700 md:dark:hover:bg-transparent"
+                        type="button">Search <svg class="w-2.5 h-2.5 ml-2.5" aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="m1 1 4 4 4-4" />
+                        </svg></button>
+
+                    <!-- Dropdown menu -->
+                    <div id="dropdownSearch" style="width: 40em;"
+                        class="z-10 hidden bg-white rounded-lg shadow w-60 dark:bg-gray-700">
+                        <script>window.searchValue = ""</script>
+                        <div class="p-3">
+                            <label for="input-group-search" class="sr-only">Search</label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="input-group-search"
+                                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Search in Store">
+
+                                <script>
+                                    document.getElementById("input-group-search").oninput = e => {
+                                        window.searchValue = e.target.value;
+                                        if (window.searchValue !== "")
+                                            getNames();
+                                    };
+                                    function getNames() {
+                                        fetch(`/api/search/names/key=${window.searchValue}`).then(res => res.json()).then(json => {
+                                            let sResults = document.getElementById("search-results"),
+                                                html = "";
+                                            if (Array.isArray(json))
+                                                for (let r of json) {
+                                                    html += `<li><div class="flex items-center pl-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
+                                                         <label for="checkbox-item-13" class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">${r}</label></div></li>`
+                                                }
+                                            else html = `<label for="checkbox-item-13" class="w-full py-2 ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">${json}</label>`
+                                            sResults.innerHTML = html;
+                                        })
+                                    }
+                                </script>
+
+                            </div>
+                        </div>
+                        <ul class="h-48 px-3 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
+                            aria-labelledby="dropdownSearchButton" id="search-results">
+                            <p class="text-center">Start typing above to see the magic</p>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    <a href="/contact_us"
+                        class="block py-2 pl-3 pr-4 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700">Contact
+                        Us</a>
+                </li>
+                <div id="creds_new" class="hidden">
+                    <a href="/login"
+                        class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span
+                            class="relative px-5 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Sign In
+                        </span>
+                    </a>
+                    </li>
+                    <a href="/signup"
+                        class="relative inline-flex items-center justify-center p-0.5 mb-2 mr-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-purple-600 to-blue-500 group-hover:from-purple-600 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800">
+                        <span
+                            class="relative px-5 py-1 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Create an Account
+                        </span>
+                    </a>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<script>
+    let int = setInterval(() => {
+        if (window.user) {
+            let userNav = document.getElementById("user-nav");
+            userNav.innerHTML = `
+<span class="block text-sm text-gray-900 dark:text-white">${window.user.Name}</span>
+<span class="block text-sm text-gray-900 dark:text-white">${window.user.Email}</span>
+`;
+            document.getElementById("profile_photo_nav").src = window.user.Pic;
+            clearInterval(int)
+        }
+    }, 1000)
+
+    if (!window.token) {
+        document.getElementById("creds_new").className = "flex";
+        document.getElementById("user-dropdown").innerHTML = `<ul class="py-2" aria-labelledby="user-menu-button">
+                    <li>
+                        <a href="#"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">My Cart</a>
+                            </li>
+                    <li>
+                        <a href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Privacy Policy</a>
+                        </li>
+                        <li>
+                            <a href="#"
+                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Sign In</a>
+                            </li>
+                    <li>
+                        <a href="#"
+                        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Create an Account</a>
+                        </li>
+                        </ul>`
+    }
+</script>

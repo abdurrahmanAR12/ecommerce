@@ -1,0 +1,66 @@
+<%- include('header.ejs') %>
+    <%- include('navbar.ejs') %>
+        <main>
+            <form enctype="multipart/form-data">
+                <section
+                    class="bg-white dark:bg-gray-900 bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern.svg')] dark:bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/hero-pattern-dark.svg')]">
+                    <div style="width: 60em;" class="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 z-10 relative">
+                        <div class="block">
+                            <div
+                                class="inline-flex justify-between items-center py-1 px-1 pr-4 mb-2 text-sm text-blue-700 bg-blue-100 rounded-full dark:bg-blue-900 dark:text-blue-300 dark:hover:bg-blue-800">
+                                <span class="text-xs bg-blue-600 rounded-full text-white px-4 py-1.5 mr-3">
+                                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
+                                        <path
+                                            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM10 15a1 1 0 1 1 0-2 1 1 0 0 1 0 2Zm1-4a1 1 0 0 1-2 0V6a1 1 0 0 1 2 0v5Z" />
+                                    </svg>
+                                </span><span class="text-sm font-medium">We have Secured your information but not for
+                                    you</span>
+                            </div>
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <img class="w-28 h-28" user-pic src="/images/user.png" alt="">
+                        </div>
+                        <label class="text-sm my-2 font-medium">Your Username: </label>
+                        <input type="text" user-Name name="Name" id="Name"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Your username here..." spellcheck="false" required>
+                        <label class="text-sm my-2 font-medium">Your Email: </label>
+                        <input type="text" user-Email name="Email"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Your Email here..." spellcheck="false" required>
+                        <label class="text-sm my-2 font-medium">Your City: </label>
+                        <input type="text" user-City name="City"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Your City here..." spellcheck="false" required>
+                        <label class="text-sm my-2 font-medium">Your Profile Pic: </label>
+                        <input type="file" user-pic-input name="Profile_Pic"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Your City here..." spellcheck="false" required>
+                        <label class="text-sm my-2 font-medium">Your Gender: </label>
+                        <select user-Gender name="Gender"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                        <label class="text-sm my-2 font-medium">Your Password: </label>
+                        <input type="password" name="Password"
+                            class="block w-full p-4 mb-4 pl-5 text-sm text-gray-900 border border-gray-300 rounded-lg bg-white focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:border-gray-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder="Your Account Password here..." spellcheck="false" required>
+                    </div>
+                    <script>
+                        let i = setInterval(() => {
+                            if (window.user) {
+                                document.querySelector("[user-Name]").value = window.user.Name
+                                document.querySelector("[user-Email]").value = window.user.Email
+                                document.querySelector("[user-City]").value = window.user.City
+                                document.querySelector("[user-Gender]").value = window.user.Gender;
+                                document.querySelector("[user-pic]").src = window.user.Pic;
+                                clearInterval(i)
+                            }
+                        }, 1000);
+                    </script>
+                </section>
+            </form>
+        </main>
+        <%- include('headerEnd.ejs') %>
