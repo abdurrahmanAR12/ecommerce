@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Product } from '../Components/Product';
 import Navbar from '../Components/Navbar';
 import InfiniteScroll from "react-infinite-scroll-component"
-import { isMobile } from "react-device-detect"
-// import dynamic from 'next/dynamic'
-// let { isMobile } = dynamic(() => require("react-device-detect"), { ssr: false })
+import { isMobile } from "react-device-detect";
 
 export async function getServerSideProps(ctx) {
     let
@@ -104,7 +102,8 @@ export default function Results({ initialResults, categories, _key }) {
         });
     }
 
-    useEffect(() => console.log(isMobile), [])
+    // useEffect(() => console.log(isMobile), [])
+
     return (<>
         <Navbar ـkey={_key} categories={categories} />
         <InfiniteScroll loader={<Loader />} next={getMoreProducts} dataLength={products.values.length} endMessage={<p className='text-center my-2'>No more Products</p>} hasMore={products.hasMore}>

@@ -1,79 +1,15 @@
 // import Script from 'next/script';
-import { CircularProgress } from '@material-ui/core';
+// import { CircularProgress } from '@material-ui/core';
 import Link from 'next/link';
 import React, { useEffect, useMemo, useState } from 'react';
-import Router from 'next/router';
 import { ArrowDownIcon } from "@heroicons/react/24/solid"
 import { Dropdown } from 'flowbite-react';
 import { isMobile } from "react-device-detect"
-import { Menu, MenuItem, Button } from "@material-ui/core"
-import { TextField } from "@material-ui/core"
+import dynamic from "next/dynamic"
 
+const AccountMenu = dynamic(() => import("./AccountMenu", { ssr: false }))
 
-export function AccountMenu({ open, handleClose, inputValue, onChange, getSugessions, results, anchorEl }) {
-
-    useMemo(() => { getSugessions() }, [inputValue]);
-
-    return (
-        <React.Fragment>
-            <Menu style={{ width: "100%" }}
-                anchorEl={anchorEl}
-                id="account-menu"
-                open={open}
-                onClose={handleClose}
-                PaperProps={{
-                    variant: "elevation",
-                    elevation: 10,
-                    sx: {
-                        width: 350,
-                        overflow: 'visible',
-                        filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                        mt: 1.5,
-                        '& .MuiAvatar-root': {
-                            width: 32,
-                            height: 32,
-                            ml: -0.5,
-                            mr: 1,
-                        },
-                        '&::before': {
-                            content: '""',
-                            display: 'block',
-                            position: 'absolute',
-                            top: 0,
-                            right: 14,
-                            width: 10,
-                            height: 10,
-                            bgcolor: 'background.paper',
-                            transform: 'translateY(-50%) rotate(45deg)',
-                            zIndex: 0,
-                        },
-                    },
-                }}
-            // transformOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            // anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            >
-                <ul className="h-48 pt-2 w-96 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownSearchButton" id="search-results">
-                    <div className="flex h-12">
-                        <TextField value={inputValue} onChange={onChange} fullWidth color="primary" variant="outlined" type='text' label="Search here..." />
-                        <Button onClick={inputValue !== "" && Router.push(`/results?key=${inputValue}`)} variant='contained'>
-                            Go
-                        </Button>
-                    </div>
-                    <div className="mt-6">
-                        {Array.isArray(results) ? results.map(result => {
-                            return <MenuItem onClick={handleClose}>
-                                {result}
-                            </MenuItem>
-                        }) : <p className='text-center text-sm'> {results}</p>}
-                    </div>
-                </ul>
-            </Menu>
-        </React.Fragment>
-    );
-}
-
-export default function Navbar({ categories, ـkey = "" }) {
+export default function Navbar({ categories, Router = null, ـkey = "" }) {
     let [search, setSearch] = useState({ value: ـkey, loading: false, x: 0, show: false, results: [] });
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -92,13 +28,6 @@ export default function Navbar({ categories, ـkey = "" }) {
             setSearch({ ...search, loading: false, results: json });
         });
     }
-
-    // function submit(e) {
-    //     e.preventDefault()
-    //     if (search.value !== "")
-    //         document.getElementById("searcher").click()
-    // }
-
     function onChange(e) {
         setSearch({ ...search, value: e.target.value })
     }
