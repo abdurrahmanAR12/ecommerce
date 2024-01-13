@@ -95,8 +95,7 @@ table {
 button,
 input,
 optgroup,
-select,
-textarea {
+select {
     color: inherit;
     font-family: inherit;
     font-size: 100%;
@@ -402,8 +401,7 @@ video {
 [type=time],
 [type=url],
 [type=week],
-select,
-textarea {
+select {
     --tw-shadow: 0 0 #0000;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -430,8 +428,7 @@ textarea {
 [type=time]:focus,
 [type=url]:focus,
 [type=week]:focus,
-select:focus,
-textarea:focus {
+select:focus {
     --tw-ring-inset: var(--tw-empty,
             /*!*/
             /*!*/
@@ -1176,6 +1173,10 @@ input:checked+.toggle-bg {
     left: 50%
 }
 
+.left-20em {
+    left: 20em;
+}
+
 .left-2 {
     left: .5rem
 }
@@ -1792,6 +1793,10 @@ input:checked+.toggle-bg {
 
 .h-48 {
     height: 12rem
+}
+
+.min-h-48 {
+    min-height: 12rem
 }
 
 .h-5 {
@@ -2827,6 +2832,10 @@ input:checked+.toggle-bg {
 }
 
 .rounded-\[2rem\] {
+    border-radius: 2rem
+}
+
+.rounded-xlg {
     border-radius: 2rem
 }
 
@@ -7629,9 +7638,37 @@ input:checked+.toggle-bg {
     --tw-ring-color: rgb(114 59 19/var(--tw-ring-opacity))
 }
 
-@media (min-width:640px) {
+.top-5em {
+    top: 5.5em;
+}
+
+.min-w-10em {
+    min-width: 10em;
+}
+
+.best-shadow {
+    box-shadow: 0 0 24px #b4c3d338
+}
+
+@media (min-width:310px) and (max-width:768px) {
     .sm\:order-last {
         order: 9999
+    }
+
+    .sm\:w-48 {
+        width: 12rem
+    }
+
+    .sm\:w-24 {
+        width: 6rem
+    }
+
+    .sm\:min-w-none {
+        min-width: unset;
+    }
+
+    .sm\:h-screen {
+        height: 100vh
     }
 
     .sm\:col-span-1 {
@@ -7645,6 +7682,85 @@ input:checked+.toggle-bg {
     .sm\:mx-auto {
         margin-left: auto;
         margin-right: auto
+    }
+
+    .sm\:m-0 {
+        margin: 0;
+    }
+
+    .sm\:mt-1 {
+        margin-top: .25em;
+    }
+
+    .sm\:mt-2 {
+        margin-top: .25em;
+    }
+
+    .sm\:p-0 {
+        padding: 0;
+    }
+
+    .sm\:rounded-none {
+        border-radius: 0;
+    }
+
+    .sm\:rounded-lg {
+        border-radius: 1em;
+    }
+
+    .sm\:pl-1 {
+        padding-left: .25em;
+    }
+
+    .sm\:bg-white {
+        background-color: white;
+    }
+
+    .sm\:top-1 {
+        top: 1em;
+    }
+
+    .sm\:top-2em {
+        top: 3em;
+    }
+
+    .sm\:w-full {
+        width: 100%;
+    }
+
+    .sm\:pl-2 {
+        padding-left: .35em;
+    }
+
+    .sm\:pt-4 {
+        padding-left: .45em;
+    }
+
+    .sm\:p-1 {
+        padding: .5em;
+    }
+
+    .sm\:p-2 {
+        padding: 1em;
+    }
+
+    .sm\:w-full {
+        width: 100%;
+    }
+
+    .sm\:px-0 {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .sm\:mx-0 {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .sm\:mx-0 {
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .sm\:mb-0 {
@@ -7663,8 +7779,12 @@ input:checked+.toggle-bg {
         margin-left: .5rem
     }
 
-    .sm\:ml-4 {
-        margin-left: 1rem
+    .sm\:mr-4 {
+        margin-right: 1rem
+    }
+
+    .sm\:ml-5 {
+        margin-left: 1.25rem
     }
 
     .sm\:ml-64 {
@@ -7800,6 +7920,10 @@ input:checked+.toggle-bg {
         border-right-width: 1px
     }
 
+    .sm\:h-full {
+        height: 98vh;
+    }
+
     .sm\:p-4 {
         padding: 1rem
     }
@@ -7883,6 +8007,10 @@ input:checked+.toggle-bg {
     .sm\:text-xl {
         font-size: 1.25rem;
         line-height: 1.75rem
+    }
+
+    .sm\:text-sm {
+        font-size: .892em;
     }
 
     .sm\:text-xs {

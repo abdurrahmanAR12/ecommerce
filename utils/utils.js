@@ -1,6 +1,4 @@
-let express = require("express"),
-    utf8 = require("utf8"),
-    fileUpload = require("express-fileupload"),
+let utf8 = require("utf8"),
     bcryptjs = require('bcryptjs'),
     jwt = require("jsonwebtoken"),
     { readFileSync } = require("fs"),
@@ -17,18 +15,7 @@ let express = require("express"),
 function slice(arr, from = 0, to = 3) {
     return { arr: arr.slice(from ? from : 0, to ? to : 3), i: to ? (to + 3) : 3 };
 };
-/**
- * 
- * @param {import("express").RouterOptions} options 
- * @returns {express.Router}
- */
-function createRouter(options) {
-    return express.Router(options);
-}
 
-function createApp() {
-    return express();
-}
 /**
  * 
  * @param {string} str 
@@ -47,15 +34,6 @@ function decodeUtf8(str) {
 function encodeUtf8(str) {
     // console.log("encoding")
     return utf8.encode(str);
-}
-
-function getFileUpload() {
-    return fileUpload();
-}
-
-function getValiadator() {
-    let v = require("express-validator")
-    return (v);
 }
 
 /**
@@ -132,7 +110,7 @@ function signJwt(payload, secretKey) {
  * @returns {Array<string>}
  */
 function getCities() {
-    return (JSON.parse(readFileSync("./api/Data/cities.json").toString()).map(elem => elem.name)).concat("Other");
+    return (JSON.parse(readFileSync("./Data/cities.json").toString()).map(elem => elem.name)).concat("Other");
 }
 
 function isValidCity(cityName) {
@@ -151,19 +129,25 @@ function isValidCity(cityName) {
  * @param {string=} secretKey 
  */
 function verifyPayload(token, secretKey) {
-    // console.log(t)
-    let t = jwt.verify(token, secretKey || (getEnvironmentVariables()).jwt);
-    return t;
+    try {
+        let jwtSecret = (getEnvironmentVariables()).jwt,
+            t = jwt.verify(token, secretKey || jwtSecret);
+        return t;
+    } catch (error) {
+        return false;
+    }
 }
 
 function getEnvironmentVariables() {
     let dotEnv = require("dotenv"),
-        env = dotEnv.parse(readFileSync("./.env").toString());;
+        env = dotEnv.parse(readFileSync("./.env").toString());
     return env;
 }
 
-function generateUser(user) {
-    return new Object({ Name: decodeUtf8(user.Name), Age: user.Age, City: user.City, Gender: user.Gender, Pic: `/api/auth/users/photos/${signJwt({ cat: user.id })}`, Email: decodeUtf8(user.Email) });
+// getEnvironmentVariables()
+
+function generateUser(user, _super = false) {
+    return new Object({ Name: decodeUtf8(user.Name), super: _super, Age: user.Age, City: user.City, Gender: user.Gender, Pic: `/api/auth/users/photos?user=${signJwt({ cat: user.id })}`, Email: decodeUtf8(user.Email) });
 }
 /**
  * 
@@ -200,12 +184,12 @@ function isValidAge(age) {
  */
 function generatePostDate(post) {
     let date = new Date(),
-        past_years = date.getUTCFullYear() - post.createdAt.getUTCFullYear(),
-        past_months = date.getUTCMonth() - post.createdAt.getUTCMonth(),
-        past_days = date.getUTCDate() - post.createdAt.getUTCDate(),
-        past_hours = date.getHours() - post.createdAt.getHours(),
-        past_minutes = date.getMinutes() - post.createdAt.getMinutes(),
-        past_seconds = date.getSeconds() - post.createdAt.getSeconds(),
+        past_years = date.getUTCFullYear() - (post.createdAt || post.cAt).getUTCFullYear(),
+        past_months = date.getUTCMonth() - (post.createdAt || post.cAt).getUTCMonth(),
+        past_days = date.getUTCDate() - (post.createdAt || post.cAt).getUTCDate(),
+        past_hours = date.getHours() - (post.createdAt || post.cAt).getHours(),
+        past_minutes = date.getMinutes() - (post.createdAt || post.cAt).getMinutes(),
+        past_seconds = date.getSeconds() - (post.createdAt || post.cAt).getSeconds(),
         postDate = `${past_years !== 0 ? (past_years === 1 ? (past_years + " Year") : (past_years + " Years")) :
             past_months !== 0 ? (past_months === 1 ? (past_months + " Month") : (past_months + " Months")) :
                 past_days !== 0 ? (past_days === 1 ? (past_days + " Day") : (past_days + " Days")) :
@@ -265,22 +249,21 @@ function processImage(image) {
     return img;
 }
 
-function generateCategory(cat, decode = true, id = false) {
+function generateCategory(cat, decode = true, id = false, type = false) {
     if (Array.isArray(cat)) {
         let pusher = [];
         for (let i = 0; i < cat.length; i++) {
             let c = cat[i];
-            pusher.push(new Object({ id: id ? signJwt({ cat: c.id }) : null, Name: decode ? decodeUtf8(c.Name) : c.Name, Pic: `${signJwt({ cat: c.id })}`, Type: decode ? decodeUtf8(c.Type) : c.Type }))
+            pusher.push(new Object({ id: id ? signJwt({ cat: c.id }) : null, Name: decode ? decodeUtf8(c.Name) : c.Name, Type: type ? decode ? decodeUtf8(c.Type) : c.Type : null }))
         }
         return pusher;
     }
     if (typeof (cat) === "object")
-        return new Object({ id: id ? signJwt({ cat: cat.id }) : null, Name: decode ? decodeUtf8(cat.Name) : cat.Name, Pic: `${signJwt({ cat: cat.id })}`, Type: decode ? decodeUtf8(cat.Type) : cat.Type })
+        return new Object({ id: id ? signJwt({ cat: cat.id }) : null, Name: decode ? decodeUtf8(cat.Name) : cat.Name, Type: type ? decode ? decodeUtf8(cat.Type) : cat.Type : null })
 
     console.log("Invalid argument ", cat);
     return new Object({});
 }
-
 
 // console.log((getCities())[getCities().length-1])
 
@@ -299,7 +282,6 @@ module.exports = {
     slice,
     isValidAge,
     isGender,
-    createApp,
     sendRespnonseJson404,
     verifyPayload,
     getEnvironmentVariables,
@@ -308,9 +290,6 @@ module.exports = {
     sendRespnonseJson400,
     createHashSalted,
     sendRespnonseJsonSucess,
-    createRouter,
-    getValiadator,
-    getFileUpload,
     decodeUtf8,
     encodeUtf8,
     generateUser

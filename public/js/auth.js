@@ -12,9 +12,9 @@ function doAuth(e) {
             messenger.innerText = json.msg;
         }
         else messenger.innerText = json;
-        // console.log(json)
     });
 }
+
 window.doAuth = doAuth;
 
 let btn = document.getElementById("submitter");
