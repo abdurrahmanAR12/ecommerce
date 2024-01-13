@@ -6,6 +6,7 @@ let { Schema, model, models } = require("mongoose"),
 
 let Image = {
     data: Types.Buffer,
+    route: String,
     cAt: { type: Types.Date, default: Date.now }
 };
 

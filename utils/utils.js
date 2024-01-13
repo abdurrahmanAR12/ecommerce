@@ -165,6 +165,14 @@ function isGender(gender) {
     return false;
 }
 
+async function generateBaseForModel(model) {
+    let cry = require("crypto"), key = cry.generateKeySync("aes", { length: 128 }).export().toString("base64url");
+    if (await model.findOne({ route: key }))
+        return generateBaseForModel(model);
+    return key;
+}
+
+
 /**
  * 
  * @param {number} age 
@@ -292,5 +300,6 @@ module.exports = {
     sendRespnonseJsonSucess,
     decodeUtf8,
     encodeUtf8,
-    generateUser
+    generateUser,
+    generateBaseForModel
 }
