@@ -9,7 +9,7 @@ import dynamic from "next/dynamic"
 
 const AccountMenu = dynamic(() => import("./AccountMenu", { ssr: false }))
 
-export default function Navbar({ categories, Router = null, ـkey = "" }) {
+export default function Navbar({ categories, ـkey = "" }) {
     let [search, setSearch] = useState({ value: ـkey, loading: false, x: 0, show: false, results: [] });
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -64,16 +64,6 @@ export default function Navbar({ categories, Router = null, ـkey = "" }) {
                                 Logout
                             </div>
                         </Dropdown>
-                        {/* <button data-collapse-toggle="navbar-user" type="button"
-                            className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
-                            aria-controls="navbar-user" aria-expanded="false">
-                            <span className="sr-only">Open main menu</span>
-                            <svg className="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 17 14">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                    d="M1 1h15M1 7h15M1 13h15" />
-                            </svg>
-                        </button> */}
                     </div>
                     <div className={`items-center justify-betweenhidden  w-full ${isMobile ? "" : "flex"} md:w-auto md:order-1`}>
                         {<ul className={`flex font-medium ${isMobile ? "" : "p-4"} md:p-0 mt-4 rounded-lg bg-white md:flex-row md:space-x-4 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700`}>

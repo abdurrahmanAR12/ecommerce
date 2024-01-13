@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Product } from '../Components/Product';
-import Navbar from '../Components/Navbar';
+// import Navbar from ;
 import InfiniteScroll from "react-infinite-scroll-component"
 import { isMobile } from "react-device-detect";
+import dynamic from "next/dynamic"
+let Navbar = dynamic(() => import('../Components/Navbar'), { ssr: false });
+
 
 export async function getServerSideProps(ctx) {
-    let
-        // { GenerateProduct } = require('./api/products/get'),
-        fuzzysort = require("fuzzysort"),
+    let fuzzysort = require("fuzzysort"),
         { Product } = require("../Models/Product"),
         { Image } = require("../Models/Image"),
         { Category } = require("../Models/Category"),

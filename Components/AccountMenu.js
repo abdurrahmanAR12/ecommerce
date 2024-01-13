@@ -8,9 +8,6 @@ import Link from "next/link";
 
 export default function AccountMenu({ open, handleClose, inputValue, onChange, getSugessions, results, anchorEl }) {
     useMemo(() => { getSugessions() }, [inputValue]);
-    // function push() {
-    //     Router.push(`/results?key=${inputValue}`)
-    // }
     return (
         <React.Fragment>
             <Menu style={{ width: "100%" }}
