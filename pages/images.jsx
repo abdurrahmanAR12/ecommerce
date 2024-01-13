@@ -10,8 +10,8 @@ export async function getServerSideProps(ctx) {
         let stream = require("stream"),
             pipeline = stream.Readable.from(img.data);
         pipeline.pipe(res);
+        return { props: {} }
     }
-    return { props: {} }
 }
 
 export default () => {
