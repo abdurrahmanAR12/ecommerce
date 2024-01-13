@@ -35,7 +35,7 @@ export async function getServerSideProps(ctx) {
             let pusher = [];
             for (let i = 0; i < cat.length; i++) {
                 let c = cat[i], Pic = [];
-                console.log(c.Pic)
+                // console.log(c.Pic)
                 for (let i = 0; i < c.Pic.length; i++) {
                     let p = await Image.findById(c.Pic[i]);
                     Pic[Pic.length] = (`/images?id=${p.route}`)
@@ -106,7 +106,7 @@ export default function Results({ initialResults, categories, _key }) {
 
     useEffect(() => console.log(isMobile), [])
     return (<>
-        <Navbar key={_key} categories={categories} />
+        <Navbar ـkey={_key} categories={categories} />
         <InfiniteScroll loader={<Loader />} next={getMoreProducts} dataLength={products.values.length} endMessage={<p className='text-center my-2'>No more Products</p>} hasMore={products.hasMore}>
             <div className={`mx-auto container ${isMobile ? "" : "grid grid-cols-2 md:grid-cols-3 gap-4"}`}>
                 {Array.isArray(products.values) && products.values.length !== 0 && products.values.map(product => {

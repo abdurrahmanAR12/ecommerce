@@ -37,7 +37,7 @@ export async function getServerSideProps(ctx) {
       let c = cat, Pic = [];
       for (let i = 0; i < c.Pic.length; i++) {
         let p = await Image.findById(c.Pic[i]);
-        Pic.push(`/images?id=${p.route}`)
+        Pic[Pic.length]=(`/images?id=${p.route}`)
       }
       return (new Object({
         Name: decode ? decodeUtf8(c.Name) : c.Name,

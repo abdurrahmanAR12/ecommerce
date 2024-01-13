@@ -73,8 +73,8 @@ export function AccountMenu({ open, handleClose, inputValue, onChange, getSugess
     );
 }
 
-export default function Navbar({ categories, key = "" }) {
-    let [search, setSearch] = useState({ value: key, loading: false, x: 0, show: false, results: [] });
+export default function Navbar({ categories, ـkey = "" }) {
+    let [search, setSearch] = useState({ value: ـkey, loading: false, x: 0, show: false, results: [] });
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -85,7 +85,7 @@ export default function Navbar({ categories, key = "" }) {
     };
 
     function getNames() {
-        if (search.loading)
+        if (search.loading || search.value == "")
             return;
         setSearch({ ...search, loading: true });
         fetch(`/api/search/names?key=${search.value}`).then(res => res.json()).then(json => {

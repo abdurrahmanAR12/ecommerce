@@ -11,6 +11,7 @@ export async function getServerSideProps(ctx) {
             pipeline = stream.Readable.from(img.data);
         pipeline.pipe(res);
     }
+    return { props: {} }
 }
 
 export default () => {
