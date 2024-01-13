@@ -1,99 +1,122 @@
 import React, { useEffect, useState } from 'react'
+import { Product } from '../Components/Product';
+import Navbar from '../Components/Navbar';
 import InfiniteScroll from "react-infinite-scroll-component"
-import Link from 'next/link';
-import { Carousel } from 'flowbite-react';
-import { Product } from "./Product"
 import { isMobile } from "react-device-detect"
+// import dynamic from 'next/dynamic'
+// let { isMobile } = dynamic(() => require("react-device-detect"), { ssr: false })
 
-
-
-export function Products({ initialProducts }) {
-    let [products, setProducts] = useState({ loading: false, hasMore: true, show: false, page: 0, values: initialProducts }),
-        [sliders, setSliders] = useState({ loading: true, values: [] });
-
-    function getSlider() {
-        setSliders({ ...sliders, loading: true });
-        fetch(`/api/sliders/get`).then(res => res.json()).then(json => {
-            setSliders({ ...sliders, loading: false, values: json });
-        });
+export async function getServerSideProps(ctx) {
+    let
+        // { GenerateProduct } = require('./api/products/get'),
+        fuzzysort = require("fuzzysort"),
+        { Product } = require("../Models/Product"),
+        { Image } = require("../Models/Image"),
+        { Category } = require("../Models/Category"),
+        { decodeUtf8 } = require("../utils/utils"),
+        key = ctx.query["key"],
+        page = parseInt(ctx.query["page"]);
+    if (!(key))
+        return { initialResults: null };
+    page = 0;
+    let prods = await Product.find(),
+        index = fuzzysort.go(key, prods, { key: ['Name'], limit: Infinity });
+    let prod, results = [], p = 0;
+    for (let i = page * 3; i < index.length; i++) {
+        if (p === 3)
+            break;
+        prod = index[i];
+        results[results.length] = (await GenerateProduct(prod.obj));
     }
 
+
+    async function GenerateProduct(cat, decode = true) {
+        if (Array.isArray(cat)) {
+            let pusher = [];
+            for (let i = 0; i < cat.length; i++) {
+                let c = cat[i], Pic = [];
+                console.log(c.Pic)
+                for (let i = 0; i < c.Pic.length; i++) {
+                    let p = await Image.findById(c.Pic[i]);
+                    Pic[Pic.length] = (`/images?id=${p.route}`)
+                }
+                pusher[pusher.length] = (new Object({
+                    Name: decode ? decodeUtf8(c.Name) : c.Name,
+                    Category: (await Category.findById(c.Category)).Name,
+                    Pic,
+                    Price: c.Price,
+                    Description: decode ? decodeUtf8(c.Description) : c.Description,
+                    Stock: c.Stock,
+                    OverView: (c.OverView),
+                    route: c.route ? c.route : null
+                }));
+            }
+            return pusher;
+        }
+        if (typeof (cat) === "object") {
+            let c = cat, Pic = [];
+            for (let i = 0; i < c.Pic.length; i++) {
+                let p = await Image.findById(c.Pic[i]);
+                Pic.push(`/images?id=${p.route}`)
+            }
+            return (new Object({
+                Name: decode ? decodeUtf8(c.Name) : c.Name,
+                Category: (await Category.findById(c.Category)).Name,
+                Pic,
+                Price: c.Price,
+                Description: decode ? decodeUtf8(c.Description) : c.Description,
+                Stock: c.Stock,
+                OverView: (c.OverView),
+                route: c.route ? c.route : null
+            }));
+        }
+        console.log("Invalid argument ", cat);
+        return new Object({});
+    }
+
+
+    function generateCategory(cat, decode = true, id = false, type = false) {
+        if (Array.isArray(cat)) {
+            let pusher = [];
+            for (let i = 0; i < cat.length; i++) {
+                let c = cat[i];
+                pusher.push(new Object({ Name: decode ? decodeUtf8(c.Name) : c.Name, Type: type ? decode ? decodeUtf8(c.Type) : c.Type : null }))
+            }
+            return pusher;
+        }
+        if (typeof (cat) === "object")
+            return new Object({ Name: decode ? decodeUtf8(cat.Name) : cat.Name, Type: type ? decode ? decodeUtf8(cat.Type) : cat.Type : null })
+
+        console.log("Invalid argument ", cat);
+        return new Object({});
+    }
+    return { props: { initialResults: (results), _key: key, categories: generateCategory(await Category.find(), true, false) } };
+}
+
+export default function Results({ initialResults, categories, _key }) {
+
+    let [products, setProducts] = useState({ loading: false, hasMore: true, show: false, page: 0, values: initialResults });
     function getMoreProducts() {
-        fetch(`/api/products/get?page=${(products.page + 1)}`).then(res => res.json()).then(json => {
+        fetch(`/api/search/results?key=${_key}&page=${(products.page + 1)}`).then(res => res.json()).then(json => {
             if (!json.length)
-                setProducts({ ...products, page: (products.page + 1), loading: false, hasMore: false, values: products.values.concat(json) });
+                setProducts({ ...products, page: (products.page + 1), loading: false, hasMore: false });
             else setProducts({ ...products, page: (products.page + 1), loading: false, values: products.values.concat(json) });
         });
     }
 
-    useEffect(() => {
-        // console.log(categories)
-        // getCats();
-        getSlider()
-    }, [])
-
-    return (
-        <>
-            <div className="relative w-full">
-                <div className="relative h-96 overflow-hidden rounded-lg md:h-96">
-                    <Carousel children={sliders.values.length ?
-                        sliders.values.map(slider => {
-                            return <div key={slider.id} className="duration-700 relative ease-in-out" data-carousel-item="active">
-                                <img src={`/api/sliders/get?id=${slider.id}`}
-                                    className="absolute block max-w-full h-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-                                    alt="" />
-                                <p className="text-sm absolute z-30 border-0 py-2 rounded-lg top-0 left-1/2 px-2 bg-white best-shadow">{slider.description}</p>
-                            </div>
-                        })
-                        : [10, 11, 21].map(__ => {
-                            return <div className="duration-700 bg-gray-100 ease-in-out">
-                                <div className="h-full my-2 bg-gray-200 absolute block max-w-full h-auto -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2 rounded-md dark:bg-gray-700 w-96 px-2 my-2"></div>
-                            </div>
-                        })} slideInterval={3000} pauseOnHover slide leftControl={<>
-                            <div className="best-shadow rounded-lg bg-white px-2 py-2">
-                                <button type="button"
-                                    className="h-full bg-black focus:outline-none rounded-lg cursor-pointer group focus:outline-none">
-                                    <span
-                                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30">
-                                        <svg className="w-4 h-4" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                d="M5 1 1 5l4 4" />
-                                        </svg>
-                                        <span className="sr-only">Previous</span>
-                                    </span>
-                                </button>
-                            </div>
-
-                        </>} rightControl={
-                            <div className="best-shadow rounded-lg bg-white px-2 py-2">
-                                <button type="button" className="h-full focus:outline-none bg-black cursor-pointer">
-                                    <span
-                                        className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-white/30">
-                                        <svg className="w-4 h-4" aria-hidden="true"
-                                            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                                d="m1 9 4-4-4-4" />
-                                        </svg>
-                                        <span className="sr-only">Next</span>
-                                    </span>
-                                </button>
-                            </div>
-                        } >
-                    </Carousel>
-                </div>
-            </div >
-            <p className="text-sm w-96 mx-auto text-center mx-4 rounded-lg best-shadow py-2 px-4 mt-4 mb-4">Products Available for you</p>
-            <InfiniteScroll loader={<Loader />} next={getMoreProducts} dataLength={products.values.length} endMessage={<p className='text-center my-2'>No more Products</p>} hasMore={products.hasMore}>
-                <div className={`mx-auto container ${isMobile ? "" : "grid grid-cols-2 md:grid-cols-3 gap-4"}`}>
-                    {Array.isArray(products.values) && products.values.length !== 0 && products.values.map(product => {
-                        return <Product key={product.id} id={product.id} Name={product.Name} Description={product.Description} Stock={product.Stock} Price={product.Price} Pic={product.Pic} />
-                    })}
-                </div>
-            </InfiniteScroll>
-        </>
-    );
+    useEffect(() => console.log(isMobile), [])
+    return (<>
+        <Navbar key={_key} categories={categories} />
+        <InfiniteScroll loader={<Loader />} next={getMoreProducts} dataLength={products.values.length} endMessage={<p className='text-center my-2'>No more Products</p>} hasMore={products.hasMore}>
+            <div className={`mx-auto container ${isMobile ? "" : "grid grid-cols-2 md:grid-cols-3 gap-4"}`}>
+                {Array.isArray(products.values) && products.values.length !== 0 && products.values.map(product => {
+                    return <Product key={product.id} id={product.id} Name={product.Name} Description={product.Description} Stock={product.Stock} Price={product.Price} Pic={product.Pic} />
+                })}
+            </div>
+        </InfiniteScroll>
+    </>)
 }
+
 
 export function Loader() {
     return (<>

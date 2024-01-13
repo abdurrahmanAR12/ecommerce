@@ -7,7 +7,7 @@ import Login from '../../../Components/Admin/Login';
 export default () => {
     let { loggedIn } = useContext(context);
     return (
-        <>{loggedIn ? <Create /> : <Login />}</>
+        <>{<Create />}</>
     );
 }
 

@@ -1,6 +1,6 @@
 import { Image } from "../../../Models/Image";
 import busboy from "busboy";
-import { sendRespnonseJson400, processImage, sendRespnonseJsonSucess } from "../../../utils/utils";
+import { sendRespnonseJson400, processImage, sendRespnonseJsonSucess, generateBaseForModel } from "../../../utils/utils";
 import { getAdmin } from "../../../Middles/getAdmin";
 
 export default async function handler(req, res) {
@@ -45,16 +45,17 @@ async function createImage(req, res) {
         for (const key in files) {
             let file = files[key];
             try {
-                let imgProcess = processImage(file.data).png({ progressive: true, adaptiveFiltering: true, compressionLevel: 9, effort: 10, palette: true }),
+                let imgProcess = processImage(file.data).webp({ effort: 6, preset: 'picture', }),
                     mData = await imgProcess.metadata();
                 if ((mData.width || mData.height) < 300)
                     return sendRespnonseJson400(res, "Please upload HD Dimensioned Images larger than 300x300")
+                imgProcess.resize({ width: 1280, height: 720, fit: "contain" })
                 file = (await imgProcess.toBuffer());
             } catch (error) {
                 return sendRespnonseJson400(res, "It seen's like you don't have uploaded the Photo or something is wrong in your photo, Please check and try again");
             }
 
-            let newImage = (new Image({ data: file })).save().then(res_ => true).catch(_e => false);
+            let newImage = (new Image({ data: file, route: await generateBaseForModel(Image) })).save().then(res_ => true).catch(_e => false);
             if (!newImage)
                 return sendRespnonseJson400(res, `Sorry, can not save all of your data right now, from ${Object.keys(files).length} Images uploaded ${index}, Please try later`);
             index++;

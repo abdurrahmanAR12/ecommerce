@@ -1,7 +1,7 @@
 import Head from "next/head"
 import Script from "next/script"
 import { ContextState } from "../Components/context/context"
-
+import { SessionProvider } from "next-auth/react"
 
 function MyApp({ Component, pageProps }) {
 
@@ -17,9 +17,11 @@ function MyApp({ Component, pageProps }) {
       <div id="toaster" className="toastContainer"></div>
       <div id="backdrop" className="backdrop-hidden"></div>
       <Script src='/js/main.js' />
-      <ContextState>
-        <Component {...pageProps} />
-      </ContextState>
+      <SessionProvider>
+        <ContextState>
+          <Component {...pageProps} />
+        </ContextState>
+      </SessionProvider>
     </>
   )
 }

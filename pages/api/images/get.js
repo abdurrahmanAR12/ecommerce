@@ -13,22 +13,18 @@ export default function handler(req, res) {
 }
 
 async function getImages(req, res) {
-    let imgs = await Image.find().select("_id"),
+    let imgs = await Image.find(),
         ids = [];
     for (let i = 0; i < imgs.length; i++) {
         let e = imgs[i];
-        ids.push(signJwt({ cat: e.id }));
+        ids[ids.length] = e.route;
     }
     return sendRespnonseJsonSucess(res, ids);
 }
 
 async function getImage(req, res) {
     let id = req.query["id"];
-    id = id ? verifyPayload(id) : null;
-    id = id ? id.cat : null;
-    if (!isValidObjectId(id))
-        return sendRespnonseJson404(res, "Not found");
-    let img = await Image.findById(id);
+    let img = await Image.findOne({ route: id });
     if (!img)
         return sendRespnonseJson404(res, "Not found");
     let stream = require("stream"),

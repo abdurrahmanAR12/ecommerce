@@ -262,12 +262,12 @@ function generateCategory(cat, decode = true, id = false, type = false) {
         let pusher = [];
         for (let i = 0; i < cat.length; i++) {
             let c = cat[i];
-            pusher.push(new Object({ id: id ? signJwt({ cat: c.id }) : null, Name: decode ? decodeUtf8(c.Name) : c.Name, Type: type ? decode ? decodeUtf8(c.Type) : c.Type : null }))
+            pusher.push(new Object({ Name: decode ? decodeUtf8(c.Name) : c.Name, Type: type ? decode ? decodeUtf8(c.Type) : c.Type : null }))
         }
         return pusher;
     }
     if (typeof (cat) === "object")
-        return new Object({ id: id ? signJwt({ cat: cat.id }) : null, Name: decode ? decodeUtf8(cat.Name) : cat.Name, Type: type ? decode ? decodeUtf8(cat.Type) : cat.Type : null })
+        return new Object({ Name: decode ? decodeUtf8(cat.Name) : cat.Name, Type: type ? decode ? decodeUtf8(cat.Type) : cat.Type : null })
 
     console.log("Invalid argument ", cat);
     return new Object({});
