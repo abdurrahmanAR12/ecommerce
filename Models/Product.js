@@ -1,18 +1,19 @@
-import c from "../Db/connect";
+import "../Db/connect"
+import { Schema, model, models } from "mongoose";
 
-let { model, Schema, models } = require("mongoose"),
-    { getMongooseSchemaTypes } = require("../utils/utils"),
-    SchemaTypes = getMongooseSchemaTypes();
+let SchemaTypes = Schema.Types;
 
-let Category = ({
-    Name: SchemaTypes.String,
-    Pic: [SchemaTypes.ObjectId],
-    Category: SchemaTypes.ObjectId,
-    Description: SchemaTypes.String,
-    Price: SchemaTypes.Number,
-    OverView: SchemaTypes.Array,
-    Stock: SchemaTypes.Number,
-    cAt: { type: Date, default: Date.now }
+let p = new Schema({
+    route: String,
+    logo: Buffer,
+    Name: String,
+    id: SchemaTypes.ObjectId,
+    heros: [{ image: SchemaTypes.Buffer, title: String, para: String }],
+    updates: [{ image: SchemaTypes.Buffer, title: String, para: String }],
+    title: SchemaTypes.String,
+    para: SchemaTypes.String
 });
 
-module.exports.Product = models.Product || model("Product", new Schema(Category, { timestamps: true }));
+// console.log(SchemaTypes)
+
+export let Product = models ? models.Product ? models.Product : model("Product", p) : {}
