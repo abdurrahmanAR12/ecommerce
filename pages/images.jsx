@@ -18,7 +18,7 @@ export async function getServerSideProps(ctx) {
             //         })
             //     ]
             // });
-            data = await sharp(img.data).resize({ width: req.query['width'] || 1920, withoutEnlargement: true, height: req.query['height'] || 1080, fit: "contain" }).toBuffer()
+            data = await sharp(img.data).resize({ width: req.query['width'] || 1920, height: req.query['height'] || 1080, fit: "contain" }).toBuffer()
         let pipeline = stream.Readable.from(Buffer.from(data));
         console.log(data.byteLength)
         pipeline.pipe(res);
