@@ -2,6 +2,9 @@ import { Slider as Image } from "../../../Models/Slider";
 import { bus } from "../../../Middles/bus";
 import { sendRespnonseJson400, processImage, sendRespnonseJsonSucess, encodeUtf8, generateBaseForModel } from "../../../utils/utils";
 import { getAdmin } from "../../../Middles/getAdmin";
+import imagemin from "imagemin"
+import imageminPngquant from "imagemin-pngquant"
+import imageminWebp from "imagemin-webp"
 
 export default async function handler(req, res) {
     let { method } = req;
@@ -25,12 +28,33 @@ async function createImage(req, res) {
         if (!file)
             return sendRespnonseJson400(res, "It seens like you don't uploaded anything");
         try {
-            let imgProcess = processImage(file.data).webp({ effort: 6, preset: 'picture', }),
+            let imgProcess = processImage(file.data).webp({
+                effort: 6,
+                quality: 60,
+                preset: 'picture',
+            }),
                 mData = await imgProcess.metadata();
             if ((mData.width || mData.height) < 300)
                 return sendRespnonseJson400(res, "Please upload HD Dimensioned Images larger than 300x300")
-            imgProcess.resize({ width: 1280, height: 720, fit: "contain" })
-            file = (await imgProcess.toBuffer());
+            imgProcess.resize({ width: 1920, height: 1080, withoutEnlargement: false, fit: "contain" })
+            file = (Buffer.from(await imagemin.buffer((await imgProcess.toBuffer()), {
+                plugins: [
+                    imageminPngquant({
+                        quality: [0.6, .8],
+                        verbose: true
+                    }),
+                    imageminWebp({
+                        quality: 100,
+                        method: 6,
+                        size: 12000,
+                        autoFilter: true,
+                        resize: {
+                            width: 1920,
+                            height: 1080
+                        }
+                    })
+                ]
+            })));
         } catch (error) {
             return sendRespnonseJson400(res, "It seen's like you don't have uploaded the Photo or something is wrong in your photo, Please check and try again");
         }

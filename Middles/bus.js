@@ -1,4 +1,6 @@
 import busboy from "busboy";
+import imagemin from "imagemin";
+import imageMinPngQuant from "imagemin-pngquant";
 
 export function bus(req) {
     return new Promise((resolve, reject) => {
@@ -12,7 +14,16 @@ export function bus(req) {
         fP.on("file", (name, s, info) => {
             let d = Buffer.alloc(0)
             s.on("data", ch => d = Buffer.concat([d, ch])).on("end", () => {
-                files[name] = { data: d, ...info };
+                files[name] = {
+                    data: imagemin.buffer(d, {
+                        plugins: [
+                            imageMinPngQuant({
+                                quality: [0.6, 0.8],
+                                strip: true
+                            })
+                        ]
+                    }), ...info
+                };
             });
         });
 

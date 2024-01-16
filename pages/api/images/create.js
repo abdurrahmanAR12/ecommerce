@@ -2,6 +2,9 @@ import { Image } from "../../../Models/Image";
 import busboy from "busboy";
 import { sendRespnonseJson400, processImage, sendRespnonseJsonSucess, generateBaseForModel } from "../../../utils/utils";
 import { getAdmin } from "../../../Middles/getAdmin";
+import imagemin from "imagemin"
+import imageminPngquant from "imagemin-pngquant"
+import imageminWebp from "imagemin-webp"
 
 export default async function handler(req, res) {
     let { method } = req;
@@ -25,8 +28,27 @@ async function createImage(req, res) {
 
     fP.on("file", (name, s, info) => {
         let d = Buffer.alloc(0)
-        s.on("data", ch => d = Buffer.concat([d, ch])).on("end", () => {
-            files[name] = { data: d };
+        s.on("data", ch => d = Buffer.concat([d, ch])).on("end", async () => {
+            files[name] = {
+                data: Buffer.from(await imagemin.buffer(d, {
+                    plugins: [
+                        imageminPngquant({
+                            quality: [0.6, .8],
+                            verbose: true
+                        }),
+                        imageminWebp({
+                            quality: 100,
+                            method: 6,
+                            size: 12000,
+                            autoFilter: true,
+                            resize: {
+                                width: req.query['width'] || 1920,
+                                height: req.query['height'] || 1080
+                            }
+                        })
+                    ]
+                }))
+            };
         });
     });
 
@@ -49,8 +71,26 @@ async function createImage(req, res) {
                     mData = await imgProcess.metadata();
                 if ((mData.width || mData.height) < 300)
                     return sendRespnonseJson400(res, "Please upload HD Dimensioned Images larger than 300x300")
-                imgProcess.resize({ width: 1280, height: 720, fit: "contain" })
+                imgProcess.resize({ width: 1920, withoutEnlargement: true, height: 1080, fit: "contain" })
                 file = (await imgProcess.toBuffer());
+                file = Buffer.from(await imagemin.buffer(file, {
+                    plugins: [
+                        imageminPngquant({
+                            quality: [0.6, .8],
+                            verbose: true
+                        }),
+                        imageminWebp({
+                            quality: 100,
+                            method: 6,
+                            size: 12000,
+                            autoFilter: true,
+                            resize: {
+                                width: req.query['width'] || 1920,
+                                height: req.query['height'] || 1080
+                            }
+                        })
+                    ]
+                }));
             } catch (error) {
                 return sendRespnonseJson400(res, "It seen's like you don't have uploaded the Photo or something is wrong in your photo, Please check and try again");
             }

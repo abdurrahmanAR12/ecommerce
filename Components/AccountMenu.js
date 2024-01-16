@@ -2,12 +2,10 @@ import { Menu, MenuItem, Button } from "@material-ui/core"
 import { TextField } from "@material-ui/core"
 import React, { useMemo } from "react";
 // import dynamic from "next/dynamic"
-import Link from "next/link";
-
+import Autosuggest from "../Components/AutoSuggest";
 // let Router = dynamic(() => import("next/router",))
 
-export default function AccountMenu({ open, handleClose, inputValue, onChange, getSugessions, results, anchorEl }) {
-    useMemo(() => { getSugessions() }, [inputValue]);
+export default function AccountMenu({ open, handleClose, _key, anchorEl }) {
     return (
         <React.Fragment>
             <Menu style={{ width: "100%" }}
@@ -16,6 +14,7 @@ export default function AccountMenu({ open, handleClose, inputValue, onChange, g
                 open={open}
                 onClose={handleClose}
                 PaperProps={{
+                    className: "h-48 px-2 pt-2 rounded-lg w-96 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200",
                     variant: "elevation",
                     elevation: 10,
                     sx: {
@@ -43,27 +42,10 @@ export default function AccountMenu({ open, handleClose, inputValue, onChange, g
                         },
                     },
                 }}
-            // transformOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-            // anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <ul className="h-48 pt-2 w-96 pb-3 overflow-y-auto text-sm text-gray-700 dark:text-gray-200"
-                    aria-labelledby="dropdownSearchButton" id="search-results">
-                    <div className="flex h-12">
-                        <TextField value={inputValue} onChange={onChange} fullWidth color="primary" variant="outlined" type='text' label="Search here..." />
-                        <Link href={`/results?key=${inputValue}`}>
-                            <Button variant='contained'>
-                                Go
-                            </Button>
-                        </Link>
-                    </div>
-                    <div className="mt-6">
-                        {Array.isArray(results) ? results.map(result => {
-                            return <MenuItem onClick={handleClose}>
-                                {result}
-                            </MenuItem>
-                        }) : <p className='text-center text-sm'> {results}</p>}
-                    </div>
-                </ul>
+                <div className="h-12">
+                    <Autosuggest _key={_key} />
+                </div>
             </Menu >
         </React.Fragment >
     );

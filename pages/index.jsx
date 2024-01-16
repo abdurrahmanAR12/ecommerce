@@ -9,7 +9,6 @@ export async function getServerSideProps(ctx) {
     { Image } = require('../Models/Image'),
     { Category } = require('../Models/Category'),
     prods = await Product.find().limit(8);
-  // page = parseInt(req.query["page"]),
 
   async function GenerateProduct(cat, decode = true, id = true) {
     if (Array.isArray(cat)) {
@@ -37,7 +36,7 @@ export async function getServerSideProps(ctx) {
       let c = cat, Pic = [];
       for (let i = 0; i < c.Pic.length; i++) {
         let p = await Image.findById(c.Pic[i]);
-        Pic[Pic.length]=(`/images?id=${p.route}`)
+        Pic[Pic.length] = (`/images?id=${p.route}`)
       }
       return (new Object({
         Name: decode ? decodeUtf8(c.Name) : c.Name,

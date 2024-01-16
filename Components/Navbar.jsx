@@ -101,7 +101,7 @@ export default function Navbar({ categories, ـkey = "" }) {
                                         aria-current="page">Search</span>
                                     <ArrowDownIcon fill='black' width={16} height={16} />
                                 </button>
-                                <AccountMenu onChange={onChange} open={open} results={search.results} inputValue={search.value} getSugessions={getNames} anchorEl={anchorEl} handleClose={handleClose} />
+                                <AccountMenu _key={ـkey} open={open} results={search.results} inputValue={search.value} anchorEl={anchorEl} handleClose={handleClose} />
                             </li>}
                             <Link href="/contact">
                                 <li>

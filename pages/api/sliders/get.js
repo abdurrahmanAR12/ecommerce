@@ -1,9 +1,8 @@
 import { Slider as Image } from "../../../Models/Slider";
 import {
-    verifyPayload, sendRespnonseJson404,
-    sendRespnonseJson400, sendRespnonseJsonSucess, decodeUtf8, signJwt
+    sendRespnonseJson404, sendRespnonseJson400, sendRespnonseJsonSucess, decodeUtf8
 } from "../../../utils/utils";
-import { isValidObjectId } from "mongoose";
+import sharp from "sharp";
 
 export default function handler(req, res) {
     if (req.method !== "GET")
@@ -20,21 +19,45 @@ async function getImages(req, res) {
         ids = [];
     for (let i = 0; i < imgs.length; i++) {
         let e = imgs[i];
-        ids.push({ id: signJwt({ cat: e.id }), description: decodeUtf8(e.description) });
+        ids.push({ id: e.route, description: decodeUtf8(e.description) });
     }
     return sendRespnonseJsonSucess(res, ids);
 }
 
 async function getImage(req, res) {
     let id = req.query["id"];
-    id = id ? verifyPayload(id) : null;
-    id = id ? id.cat : null;
-    if (!isValidObjectId(id))
-        return sendRespnonseJson404(res, "Not found");
-    let img = await Image.findById(id);
+    let img = await Image.findOne({ route: id });
     if (!img)
         return sendRespnonseJson404(res, "Not found");
     let stream = require("stream"),
-        pipeline = stream.Readable.from(img.data);
+        // data = Buffer.from(await imagemin.buffer(img.data, {
+        //     plugins: [
+        //         imageminPngquant({
+        //             quality: [0.6, .8],
+        //             verbose: true
+        //         }),
+        //         imageminWebp({
+        //             quality: 100,
+        //             method: 6,
+        //             size: 12000,
+        //             autoFilter: true,
+        //             resize: {
+        //                 width: req.query['width'] || 1920,
+        //                 height: req.query['height'] || 1080
+        //             }
+        //         })
+        //     ]
+        // }));
+        data = await sharp(img.data).webp({
+            quality: 80,
+            effort: 6,
+            size: 12000
+        }).resize({
+            width: parseInt(req.query['width']) || 1920,
+            height: parseInt(req.query['height']) || 1080,
+            fit: "contain"
+        }).toBuffer()
+    let pipeline = stream.Readable.from(data);
+    console.log(data.byteLength)
     pipeline.pipe(res);
 }
