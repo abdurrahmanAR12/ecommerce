@@ -8,7 +8,7 @@ import Login from '../../../Components/Admin/Login';
 export default function exporter() {
     let { loggedIn } = useContext(context);
     return (<>
-        {loggedIn ? <Index /> : <Login />}
+        {<Index />}
     </>)
 }
 
