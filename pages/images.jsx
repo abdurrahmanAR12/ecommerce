@@ -1,4 +1,4 @@
-import sharp from "sharp";
+// import sharp from "sharp";
 
 export async function getServerSideProps(ctx) {
     let { Image } = require("../Models/Image"),
