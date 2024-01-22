@@ -9,7 +9,76 @@ import { Grid, Box } from "@material-ui/core"
 import Skeleton from "@mui/material/Skeleton"
 
 
-export default function Category() {
+export async function getServerSideProps(ctx) {
+    let { decodeUtf8 } = require('../utils/utils'),
+        { Product } = require('../Models/Product'),
+        { Image } = require('../Models/Image'),
+        { Category } = require('../Models/Category'),
+        prods = await Product.find().limit(8);
+
+    async function GenerateProduct(cat, decode = true, id = true) {
+        if (Array.isArray(cat)) {
+            let pusher = [];
+            for (let i = 0; i < cat.length; i++) {
+                let c = cat[i], Pic = [];
+                for (let i = 0; i < c.Pic.length; i++) {
+                    let p = await Image.findById(c.Pic[i]);
+                    Pic[Pic.length] = (`/images?id=${p.route}&width=520&height=260`)
+                }
+                pusher[pusher.length] = (new Object({
+                    Name: decode ? decodeUtf8(c.Name) : c.Name,
+                    Category: (await Category.findById(c.Category)).Name,
+                    Pic,
+                    Price: c.Price,
+                    Description: decode ? decodeUtf8(c.Description) : c.Description,
+                    Stock: c.Stock,
+                    OverView: (c.OverView),
+                    route: c.route ? c.route : null
+                }));
+            }
+            return pusher;
+        }
+        if (typeof (cat) === "object") {
+            let c = cat, Pic = [];
+            for (let i = 0; i < c.Pic.length; i++) {
+                let p = await Image.findById(c.Pic[i]);
+                Pic[Pic.length] = (`/images?id=${p.route}&width=360&height=180`)
+            }
+            return (new Object({
+                Name: decode ? decodeUtf8(c.Name) : c.Name,
+                Category: (await Category.findById(c.Category)).Name,
+                Pic,
+                Price: c.Price,
+                Description: decode ? decodeUtf8(c.Description) : c.Description,
+                Stock: c.Stock,
+                OverView: (c.OverView),
+                route: c.route ? c.route : null
+            }));
+        }
+        console.log("Invalid argument ", cat);
+        return new Object({});
+    }
+
+    function generateCategory(cat, decode = true, id = false, type = false) {
+        if (Array.isArray(cat)) {
+            let pusher = [];
+            for (let i = 0; i < cat.length; i++) {
+                let c = cat[i];
+                pusher.push(new Object({ Name: decode ? decodeUtf8(c.Name) : c.Name, Type: type ? decode ? decodeUtf8(c.Type) : c.Type : null }))
+            }
+            return pusher;
+        }
+        if (typeof (cat) === "object")
+            return new Object({ Name: decode ? decodeUtf8(cat.Name) : cat.Name, Type: type ? decode ? decodeUtf8(cat.Type) : cat.Type : null })
+
+        console.log("Invalid argument ", cat);
+        return new Object({});
+    }
+    // console.log((await Category.find()))
+    return { props: { categories: generateCategory(await Category.find(), true, false), initialProducts: await GenerateProduct(prods) } };
+}
+
+export default function Category({ categories }) {
     let [products, setProducts] = useState({ loading: true, page: 0, hasMore: true, values: [] }),
         [query, setQ] = useState(null),
         [_404, set404] = useState(false),
@@ -66,7 +135,7 @@ export default function Category() {
 
     return (
         <>
-            <Navbar />
+            <Navbar categories={categories}/>
             <Head>
                 <title>Product Categories - Millionairo</title>
                 {/* <meta name="keywords" content={keys.toString() + ",products,product millionairo,categories, millionairo"} /> */}
@@ -76,7 +145,7 @@ export default function Category() {
                 <InfiniteScroll loader={<Loader />} next={query && getMoreProducts} dataLength={products.values.length} endMessage={_404 ? "" : <p className='text-center my-2'>{products.values.length ? "No more Products" : "Nothing to show here"}</p>} hasMore={_404 ? false : products.hasMore}>
                     <div style={{ maxWidth: "60%" }} className="mx-auto grid grid-cols-2 md:grid-cols-3 gap-4">
                         {!products.loading && Array.isArray(products.values) && products.values.length !== 0 && products.values.map(product => {
-                            return <Product key={product.id} id={product.id} Name={product.Name} Description={product.Description} Stock={product.Stock} Price={product.Price} Pic={product.Pic} />
+                            return <Product key={product.route} id={product.route} Name={product.Name} Description={product.Description} Stock={product.Stock} Price={product.Price} Pic={product.Pic} />
                         })}
                     </div>
                 </InfiniteScroll>

@@ -17,7 +17,7 @@ export async function getServerSideProps(ctx) {
         let c = cat[i], Pic = [];
         for (let i = 0; i < c.Pic.length; i++) {
           let p = await Image.findById(c.Pic[i]);
-          Pic[Pic.length] = (`/images?id=${p.route}`)
+          Pic[Pic.length] = (`/images?id=${p.route}&width=520&height=260`)
         }
         pusher[pusher.length] = (new Object({
           Name: decode ? decodeUtf8(c.Name) : c.Name,
@@ -36,7 +36,7 @@ export async function getServerSideProps(ctx) {
       let c = cat, Pic = [];
       for (let i = 0; i < c.Pic.length; i++) {
         let p = await Image.findById(c.Pic[i]);
-        Pic[Pic.length] = (`/images?id=${p.route}`)
+        Pic[Pic.length] = (`/images?id=${p.route}&width=360&height=180`)
       }
       return (new Object({
         Name: decode ? decodeUtf8(c.Name) : c.Name,
