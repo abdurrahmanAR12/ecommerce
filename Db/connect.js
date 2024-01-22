@@ -1,5 +1,13 @@
-let { connect, connections } = require("mongoose"),
-    { getEnvironmentVariables } = require("../utils/utils");
+let { connect, connections } = require("mongoose")
+let { readFileSync } = require("fs")
+
+
+function getEnvironmentVariables() {
+    let dotEnv = require("dotenv"),
+        env = dotEnv.parse(readFileSync("./.env").toString());
+    return env;
+}
+
 
 
 function MongoConnect() {
